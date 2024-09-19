@@ -12,16 +12,16 @@ def search_paper(paper_title):
         'url': paper['pub_url'] if 'pub_url' in paper else "No URL found"
     }
 
-# Step 2: Summarize the paper abstract
-def summarize_text(text, model_name="facebook/bart-large-cnn"):
+# Step 2: Summarize the paper abstract with adjustable length
+def summarize_text(text, model_name="facebook/bart-large-cnn", max_len=300, min_len=100):
     summarizer = pipeline("summarization", model=model_name)
-    summary = summarizer(text, max_length=300, min_length=150, do_sample=False)
+    summary = summarizer(text, max_length=max_len, min_length=min_len, do_sample=False)
     return summary[0]['summary_text']
 
 # Main function
-def summarize_paper(paper_title):
+def summarize_paper(paper_title, max_len=300, min_len=100):
     paper_info = search_paper(paper_title)
-    summary = summarize_text(paper_info['abstract'])
+    summary = summarize_text(paper_info['abstract'], max_len=max_len, min_len=min_len)
     
     return {
         'title': paper_info['title'],
@@ -29,9 +29,11 @@ def summarize_paper(paper_title):
         'url': paper_info['url']
     }
 
-# Example usage
-paper_title = "Neural networks for machine learning"
-result = summarize_paper(paper_title)
+# Prompt user for the paper title
+paper_title = input("Which paper do you want to summarize? ")
+
+# Generate summary with user-provided paper title
+result = summarize_paper(paper_title, max_len=300, min_len=100)
 
 # Green color codes
 green_start = "\033[92m"
