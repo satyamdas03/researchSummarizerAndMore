@@ -47,12 +47,17 @@ def compare_papers(paper_titles):
         result = summarize_paper(title)
         paper_results.append(result)
 
+    green_start = "\033[92m"
+    reset_color = "\033[0m"
+    magenta_color = "\033[35m"
+    yellow_start = "\033[93m"
+
     # Print summaries and sentiment results
     for result in paper_results:
         print(f"Title: {result['title']}")
-        print(f"Summary: {result['summary']}")
-        print(f"Sentiment: {result['sentiment']} (Confidence: {result['confidence']:.2f})")
-        print(f"URL: {result['url']}\n")
+        print(f"{green_start}Summary: {result['summary']}")
+        print(f"{ magenta_color}Sentiment: {result['sentiment']} (Confidence: {result['confidence']:.2f})")
+        print(f"{yellow_start}URL: {result['url']}\n")
 
     # Visualize sentiment comparison with a bar chart
     visualize_comparison(paper_results)
