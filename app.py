@@ -6,6 +6,7 @@ from collections import defaultdict
 from wordcloud import WordCloud
 import nltk
 from nltk.corpus import stopwords
+from matplotlib_venn import venn2, venn3  # Import Venn diagram tools
 
 nltk.download('stopwords')
 stop_words = set(stopwords.words('english'))
@@ -83,6 +84,9 @@ def compare_papers(paper_titles):
     best_paper = identify_best_paper(paper_results)
     print(f"\033[92mBest paper for research: {best_paper['title']}\033[0m")
 
+    # Generate Venn diagram comparing keywords
+    generate_venn_diagram(paper_results)
+
 # Step 7: Visualization of key findings and sentiment comparison
 def visualize_comparison(paper_results):
     titles = [result['title'] for result in paper_results]
@@ -124,7 +128,31 @@ def generate_wordcloud(paper_results):
     plt.title('Keyword Cloud Comparison')
     plt.show()
 
-# Step 9: Identify the best paper for research based on key metrics
+# Step 9: Generate Venn Diagram for comparing keywords between papers
+def generate_venn_diagram(paper_results):
+    if len(paper_results) == 2:
+        keywords1 = set(paper_results[0]['keywords'])
+        keywords2 = set(paper_results[1]['keywords'])
+
+        # Generate a Venn diagram comparing keywords
+        venn2([keywords1, keywords2], set_labels=(paper_results[0]['title'], paper_results[1]['title']))
+        plt.title('Keyword Overlap Between Papers')
+        plt.show()
+
+    elif len(paper_results) == 3:
+        keywords1 = set(paper_results[0]['keywords'])
+        keywords2 = set(paper_results[1]['keywords'])
+        keywords3 = set(paper_results[2]['keywords'])
+
+        # Generate a Venn diagram for three papers
+        venn3([keywords1, keywords2, keywords3], set_labels=(paper_results[0]['title'], paper_results[1]['title'], paper_results[2]['title']))
+        plt.title('Keyword Overlap Between Three Papers')
+        plt.show()
+
+    else:
+        print("Venn diagram only works for 2 or 3 papers at a time.")
+
+# Step 10: Identify the best paper for research based on key metrics
 def identify_best_paper(paper_results):
     best_paper = max(paper_results, key=lambda paper: (paper['confidence'], paper['abstract_length']))
     return best_paper
