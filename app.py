@@ -21,6 +21,74 @@ def search_paper(paper_title):
         'url': paper['pub_url'] if 'pub_url' in paper else "No URL found"
     }
 
+# new searching function
+def search_papers_by_topic_and_year(topic, year):
+    search_query = scholarly.search_pubs(topic)
+    papers = []
+    
+    # Fetch multiple papers and filter by year
+    for paper in search_query:
+        if paper['bib'].get('pub_year', 0) == year:
+            papers.append({
+                'title': paper['bib']['title'],
+                'abstract': paper['bib']['abstract'],
+                'year': year,
+                'url': paper['pub_url'] if 'pub_url' in paper else "No URL found"
+            })
+        if len(papers) >= 10:  # Limit the number of papers per year for the analysis
+            break
+    return papers
+
+
+# Function to fetch papers for a range of years and track trends
+def track_paper_trends(topic, start_year, end_year):
+    yearly_summaries = {}
+    yearly_keywords = defaultdict(list)
+    
+    for year in range(start_year, end_year + 1):
+        print(f"Fetching papers for the year {year}...")
+        papers = search_papers_by_topic_and_year(topic, year)
+        summaries = []
+        keywords_list = []
+        
+        for paper in papers:
+            summary = summarize_text(paper['abstract'])
+            keywords = extract_keywords(paper['abstract'])
+            summaries.append(summary)
+            keywords_list.extend(keywords)
+        
+        yearly_summaries[year] = summaries
+        yearly_keywords[year] = keywords_list
+    
+    return yearly_summaries, yearly_keywords
+
+
+# Visualization: Number of papers per year
+def visualize_paper_trends(yearly_summaries):
+    years = list(yearly_summaries.keys())
+    num_papers = [len(summaries) for summaries in yearly_summaries.values()]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(years, num_papers, marker='o', linestyle='-', color='b')
+    plt.fill_between(years, num_papers, color='lightblue', alpha=0.5)
+    plt.xlabel('Year')
+    plt.ylabel('Number of Papers')
+    plt.title('Research Paper Trends Over Time')
+    plt.grid(True)
+    plt.show()
+
+# Visualization: Word cloud of emerging themes by year
+def visualize_trend_keywords(yearly_keywords):
+    for year, keywords in yearly_keywords.items():
+        print(f"Generating word cloud for the year {year}...")
+        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(' '.join(keywords))
+        plt.figure(figsize=(10, 5))
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        plt.title(f'Keyword Cloud for {year}')
+        plt.show()
+
+
 # Step 2: Summarize the paper abstract with adjustable length
 def summarize_text(text, model_name="facebook/bart-large-cnn", max_len=300, min_len=100):
     summarizer = pipeline("summarization", model=model_name)
@@ -167,3 +235,15 @@ if __name__ == "__main__":
 
     # Generate comparison and visualization for the given paper titles
     compare_papers(paper_titles)
+
+    # Prompt user for the topic and the range of years
+    topic = input("Enter a topic to track research trends: ")
+    start_year = int(input("Enter the start year: "))
+    end_year = int(input("Enter the end year: "))
+    
+    # Track paper trends and visualize
+    yearly_summaries, yearly_keywords = track_paper_trends(topic, start_year, end_year)
+    
+    # Visualize the trends
+    visualize_paper_trends(yearly_summaries)
+    visualize_trend_keywords(yearly_keywords)
