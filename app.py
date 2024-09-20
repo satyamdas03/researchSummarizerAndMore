@@ -7,7 +7,7 @@ from wordcloud import WordCloud
 import nltk
 from nltk.corpus import stopwords
 from matplotlib_venn import venn2, venn3  # Import Venn diagram tools
-
+# to check
 nltk.download('stopwords')
 stop_words = set(stopwords.words('english'))
 
