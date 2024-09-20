@@ -3,6 +3,12 @@ from scholarly import scholarly
 from transformers import pipeline
 import matplotlib.pyplot as plt
 from collections import defaultdict
+from wordcloud import WordCloud
+import nltk
+from nltk.corpus import stopwords
+
+nltk.download('stopwords')
+stop_words = set(stopwords.words('english'))
 
 # Step 1: Fetch paper details from Google Scholar
 def search_paper(paper_title):
@@ -26,20 +32,29 @@ def analyze_sentiment(summary_text):
     sentiment = sentiment_analyzer(summary_text)
     return sentiment[0]
 
-# Step 4: Summarize and analyze a single paper
+# Step 4: Extract keywords from the paper abstract
+def extract_keywords(text):
+    words = text.split()
+    keywords = [word for word in words if word.lower() not in stop_words and len(word) > 3]
+    return keywords
+
+# Step 5: Summarize and analyze a single paper
 def summarize_paper(paper_title, max_len=300, min_len=100):
     paper_info = search_paper(paper_title)
     summary = summarize_text(paper_info['abstract'], max_len=max_len, min_len=min_len)
     sentiment_result = analyze_sentiment(summary)  # Get the sentiment of the summary
+    keywords = extract_keywords(paper_info['abstract'])
     return {
         'title': paper_info['title'],
         'summary': summary,
         'url': paper_info['url'],
         'sentiment': sentiment_result['label'],  # Include sentiment in the result
-        'confidence': sentiment_result['score']
+        'confidence': sentiment_result['score'],
+        'abstract_length': len(paper_info['abstract']),
+        'keywords': keywords
     }
 
-# Step 5: Multiple paper comparison and visualization
+# Step 6: Multiple paper comparison and visualization
 def compare_papers(paper_titles):
     paper_results = []
     
@@ -57,23 +72,62 @@ def compare_papers(paper_titles):
         print(f"Title: {result['title']}")
         print(f"{green_start}Summary: {result['summary']}")
         print(f"{ magenta_color}Sentiment: {result['sentiment']} (Confidence: {result['confidence']:.2f})")
+        print(f"Abstract Length: {result['abstract_length']} words")
+        print(f"Keywords: {', '.join(result['keywords'])}")
         print(f"{yellow_start}URL: {result['url']}\n")
 
-    # Visualize sentiment comparison with a bar chart
+    # Visualize sentiment, abstract length, and keyword comparison
     visualize_comparison(paper_results)
 
-# Step 6: Visualization of key findings and sentiment comparison
+    # Identify the best paper for research based on key metrics
+    best_paper = identify_best_paper(paper_results)
+    print(f"\033[92mBest paper for research: {best_paper['title']}\033[0m")
+
+# Step 7: Visualization of key findings and sentiment comparison
 def visualize_comparison(paper_results):
     titles = [result['title'] for result in paper_results]
     sentiments = [result['confidence'] for result in paper_results]
+    abstract_lengths = [result['abstract_length'] for result in paper_results]
 
-    plt.figure(figsize=(10, 6))
-    plt.barh(titles, sentiments, color=['green' if result['sentiment'] == 'POSITIVE' else 'red' for result in paper_results])
-    plt.xlabel('Sentiment Confidence')
-    plt.ylabel('Research Papers')
-    plt.title('Sentiment Comparison Between Papers')
+    fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+
+    # Bar chart for sentiment confidence
+    ax[0].barh(titles, sentiments, color=['green' if result['sentiment'] == 'POSITIVE' else 'red' for result in paper_results])
+    ax[0].set_xlabel('Sentiment Confidence')
+    ax[0].set_ylabel('Research Papers')
+    ax[0].set_title('Sentiment Comparison Between Papers')
+
+    # Bar chart for abstract length
+    ax[1].barh(titles, abstract_lengths, color='blue')
+    ax[1].set_xlabel('Abstract Length (words)')
+    ax[1].set_ylabel('Research Papers')
+    ax[1].set_title('Abstract Length Comparison')
+
     plt.tight_layout()
     plt.show()
+
+    # Generate word clouds for keywords
+    generate_wordcloud(paper_results)
+
+# Step 8: Generate WordCloud for keywords
+def generate_wordcloud(paper_results):
+    all_keywords = defaultdict(int)
+
+    for result in paper_results:
+        for keyword in result['keywords']:
+            all_keywords[keyword.lower()] += 1
+
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(all_keywords)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title('Keyword Cloud Comparison')
+    plt.show()
+
+# Step 9: Identify the best paper for research based on key metrics
+def identify_best_paper(paper_results):
+    best_paper = max(paper_results, key=lambda paper: (paper['confidence'], paper['abstract_length']))
+    return best_paper
 
 # Main execution for paper comparison
 if __name__ == "__main__":
