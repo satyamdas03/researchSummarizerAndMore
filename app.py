@@ -47,11 +47,12 @@ result = summarize_paper(paper_title, max_len=300, min_len=100)
 # Green color codes for summary
 green_start = "\033[92m"
 reset_color = "\033[0m"
+magenta_color = "\033[35m"
 
 # Print the result with the summary in green and sentiment analysis
 print(f"Title: {result['title']}")
 print(f"{green_start}Summary: {result['summary']}{reset_color}")
-print(f"URL: {result['url']}")
+print(f"URL: {magenta_color}{result['url']}")
 
 # Print the sentiment analysis result
 print(f"Sentiment: {result['sentiment']['label']} (Confidence: {result['sentiment']['score']:.2f})")
