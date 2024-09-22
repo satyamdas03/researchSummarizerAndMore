@@ -1723,6 +1723,22 @@ typing = ["typing-extensions"]
 xmp = ["defusedxml"]
 
 [[package]]
+name = "pybliometrics"
+version = "4.1"
+description = "Python-based API-Wrapper to access Scopus"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pybliometrics-4.1-py2.py3-none-any.whl", hash = "sha256:80d03b107b90408fc15dea217b3aa10b9ee94d8f9c45002bddf60a08f67cc3ef"},
+    {file = "pybliometrics-4.1.tar.gz", hash = "sha256:4af9b7584b2caae3a53d4c8e2a7d4395c26189352440356744b57660ed0348e4"},
+]
+
+[package.dependencies]
+requests = "*"
+tqdm = "*"
+urllib3 = "*"
+
+[[package]]
 name = "pycparser"
 version = "2.22"
 description = "C parser in Python"
@@ -3211,4 +3227,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "27079896b44db2f748cef6422c6d4aa73aa26e2ebd12594226008e5bdb58a868"
+content-hash = "6bfbb71e41a178a8fa58ff2678d5853a61a16a178ea051069272e5e32643107e"
