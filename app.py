@@ -1,4 +1,3 @@
-## arXiv API approach
 import requests
 from transformers import pipeline
 import matplotlib.pyplot as plt
@@ -7,6 +6,7 @@ from wordcloud import WordCloud
 import nltk
 from nltk.corpus import stopwords
 from matplotlib_venn import venn2, venn3
+import xml.etree.ElementTree as ET  # Move this import to the top
 
 # Ensure NLTK stopwords are downloaded
 nltk.download('stopwords')
@@ -25,7 +25,6 @@ def search_paper(paper_title):
         return None
 
 def parse_arxiv_response(response):
-    import xml.etree.ElementTree as ET
     root = ET.fromstring(response)
     entry = root.find('{http://www.w3.org/2005/Atom}entry')
     
@@ -159,6 +158,7 @@ def compare_papers(paper_titles):
     for result in paper_results:
         print(f"Title: {result['title']}")
         print(f"{green_start}Summary: {result['summary']}")
+
         print(f"{magenta_color}Sentiment: {result['sentiment']} (Confidence: {result['confidence']:.2f})")
         print(f"Abstract Length: {result['abstract_length']} words")
         print(f"Keywords: {', '.join(result['keywords'])}")
