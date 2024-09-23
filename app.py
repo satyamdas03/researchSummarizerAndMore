@@ -5,12 +5,20 @@ from collections import defaultdict
 from wordcloud import WordCloud
 import nltk
 from nltk.corpus import stopwords
-from matplotlib_venn import venn2, venn3
-import xml.etree.ElementTree as ET  # Move this import to the top
+import xml.etree.ElementTree as ET
+import openai
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Ensure NLTK stopwords are downloaded
 nltk.download('stopwords')
 stop_words = set(stopwords.words('english'))
+
+# Initialize OpenAI API key from environment variable
+openai.api_key = os.getenv('OPENAI_API_KEY')  # Ensure your .env has this variable
 
 # Step 1: Fetch paper details from arXiv
 def search_paper(paper_title):
@@ -247,6 +255,16 @@ def identify_best_paper(paper_results):
     best_paper = max(paper_results, key=lambda paper: (paper['confidence'], paper['abstract_length']))
     return best_paper
 
+# Step 11: AI Chatbot for Research Assistance
+def ai_chatbot(query):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": query}
+        ]
+    )
+    return response['choices'][0]['message']['content']
+
 # Main execution for paper comparison
 if __name__ == "__main__":
     # Prompt user for multiple paper titles
@@ -269,3 +287,11 @@ if __name__ == "__main__":
     # Visualize the trends
     visualize_paper_trends(yearly_summaries)
     visualize_trend_keywords(yearly_keywords)
+
+    # Chatbot interaction
+    while True:
+        user_query = input("Ask the AI chatbot for research assistance (type 'exit' to quit): ")
+        if user_query.lower() == 'exit':
+            break
+        answer = ai_chatbot(user_query)
+        print(f"Chatbot: {answer}")
