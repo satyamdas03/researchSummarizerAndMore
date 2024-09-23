@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 import openai
 from dotenv import load_dotenv
 import os
+from matplotlib_venn import venn2, venn3
 
 # Load environment variables from .env file
 load_dotenv()
