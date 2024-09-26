@@ -228,50 +228,69 @@ class ResearchApp:
     def __init__(self, master):
         self.master = master
         self.master.title("Research Summarizer and More")
+        self.master.geometry("1020x500")
+        self.master.resizable(False, False)
 
         self.frame = ctk.CTkFrame(master)
-        self.frame.pack(padx=20, pady=20)
+        self.frame.pack(padx=20, pady=20, fill="both", expand=True)
 
-        self.title_entry = ctk.CTkEntry(self.frame, placeholder_text="Enter paper title(s), comma-separated")
+        # Paper title input
+        self.title_entry = ctk.CTkEntry(self.frame, placeholder_text="Enter paper title(s), comma-separated", width=300)
         self.title_entry.pack(pady=10)
 
-        self.year_entry = ctk.CTkEntry(self.frame, placeholder_text="Enter year for trend analysis")
-        self.year_entry.pack(pady=10)
+        # Buttons for summarizing, comparing, and visualizing papers
+        self.buttons_frame = ctk.CTkFrame(self.frame)
+        self.buttons_frame.pack(pady=10)
 
-        self.topic_entry = ctk.CTkEntry(self.frame, placeholder_text="Enter topic for trend analysis")
+        self.summarize_button = ctk.CTkButton(self.buttons_frame, text="Summarize Paper", command=self.summarize_paper, font=("Arial", 14, "bold"))
+        self.summarize_button.grid(row=0, column=0, padx=5)
+
+        self.compare_button = ctk.CTkButton(self.buttons_frame, text="Compare Papers", command=self.compare_papers, font=("Arial", 14, "bold"))
+        self.compare_button.grid(row=0, column=1, padx=5)
+
+        self.visualize_comparison_button = ctk.CTkButton(self.buttons_frame, text="Visualize Comparison", command=self.visualize_comparison, font=("Arial", 14, "bold"))
+        self.visualize_comparison_button.grid(row=0, column=2, padx=5)
+
+        self.wordcloud_button = ctk.CTkButton(self.buttons_frame, text="Generate Word Cloud", command=self.generate_wordcloud, font=("Arial", 14, "bold"))
+        self.wordcloud_button.grid(row=0, column=3, padx=5)
+
+        self.venn_button = ctk.CTkButton(self.buttons_frame, text="Generate Venn Diagram", command=self.generate_venn_diagram, font=("Arial", 14, "bold"))
+        self.venn_button.grid(row=0, column=4, padx=5)
+
+        self.best_paper_button = ctk.CTkButton(self.buttons_frame, text="Identify Best Paper", command=self.identify_best_paper, font=("Arial", 14, "bold"))
+        self.best_paper_button.grid(row=0, column=5, padx=5)
+
+        # Year input for trend analysis
+        self.start_year_entry = ctk.CTkEntry(self.frame, placeholder_text="Enter start year for trend analysis", width=300)
+        self.start_year_entry.pack(pady=10)
+
+        self.end_year_entry = ctk.CTkEntry(self.frame, placeholder_text="Enter end year for trend analysis", width=300)
+        self.end_year_entry.pack(pady=10)
+
+        # Topic input for trend analysis
+        self.topic_entry = ctk.CTkEntry(self.frame, placeholder_text="Enter topic for trend analysis", width=300)
         self.topic_entry.pack(pady=10)
 
-        self.summarize_button = ctk.CTkButton(self.frame, text="Summarize Paper", command=self.summarize_paper)
-        self.summarize_button.pack(pady=10)
+        # Buttons for tracking and visualizing trends
+        self.trends_frame = ctk.CTkFrame(self.frame)
+        self.trends_frame.pack(pady=10)
 
-        self.compare_button = ctk.CTkButton(self.frame, text="Compare Papers", command=self.compare_papers)
-        self.compare_button.pack(pady=10)
+        self.trend_button = ctk.CTkButton(self.trends_frame, text="Track Trends", command=self.track_trends, font=("Arial", 14, "bold"))
+        self.trend_button.grid(row=0, column=0, padx=5)
 
-        self.trend_button = ctk.CTkButton(self.frame, text="Track Trends", command=self.track_trends)
-        self.trend_button.pack(pady=10)
+        self.visualize_trend_button = ctk.CTkButton(self.trends_frame, text="Visualize Trends", command=self.visualize_trends, font=("Arial", 14, "bold"))
+        self.visualize_trend_button.grid(row=0, column=1, padx=5)
 
-        self.visualize_trend_button = ctk.CTkButton(self.frame, text="Visualize Trends", command=self.visualize_trends)
-        self.visualize_trend_button.pack(pady=10)
-
-        self.visualize_comparison_button = ctk.CTkButton(self.frame, text="Visualize Comparison", command=self.visualize_comparison)
-        self.visualize_comparison_button.pack(pady=10)
-
-        self.wordcloud_button = ctk.CTkButton(self.frame, text="Generate Word Cloud", command=self.generate_wordcloud)
-        self.wordcloud_button.pack(pady=10)
-
-        self.venn_button = ctk.CTkButton(self.frame, text="Generate Venn Diagram", command=self.generate_venn_diagram)
-        self.venn_button.pack(pady=10)
-
-        self.best_paper_button = ctk.CTkButton(self.frame, text="Identify Best Paper", command=self.identify_best_paper)
-        self.best_paper_button.pack(pady=10)
-
-        self.chat_button = ctk.CTkButton(self.frame, text="AI Chatbot", command=self.ai_chatbot_interface)
-        self.chat_button.pack(pady=10)
-
+        # Output textbox for results
         self.output_text = ctk.CTkTextbox(self.frame, height=15, width=60)
         self.output_text.pack(pady=10)
 
+        # AI Chatbot section
+        self.chat_button = ctk.CTkButton(self.frame, text="AI Chatbot", command=self.ai_chatbot_interface, font=("Arial", 14, "bold"))
+        self.chat_button.pack(pady=10)
+
         self.results = []
+
 
     def summarize_paper(self):
         paper_title = self.title_entry.get()
