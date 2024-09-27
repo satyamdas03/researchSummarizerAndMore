@@ -11,6 +11,11 @@ from dotenv import load_dotenv
 import os
 from matplotlib_venn import venn2, venn3
 
+# Define color codes for terminal output
+BLUE = "\033[94m"
+GREEN = "\033[92m"
+RESET = "\033[0m"
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -21,7 +26,6 @@ stop_words = set(stopwords.words('english'))
 # Initialize OpenAI API key from environment variable
 openai.api_key = os.getenv('OPENAI_API_KEY')  # Ensure your .env has this variable
 
-# adding mode 
 # Function to initiate user mode selection
 def select_mode():
     while True:
@@ -175,12 +179,12 @@ def compare_papers(paper_titles):
 
     for result in paper_results:
         print(f"Title: {result['title']}")
-        print(f"{green_start}Summary: {result['summary']}")
+        print(f"{green_start}Summary: {result['summary']}{reset_color}")
 
-        print(f"{magenta_color}Sentiment: {result['sentiment']} (Confidence: {result['confidence']:.2f})")
+        print(f"{magenta_color}Sentiment: {result['sentiment']} (Confidence: {result['confidence']:.2f}){reset_color}")
         print(f"Abstract Length: {result['abstract_length']} words")
         print(f"Keywords: {', '.join(result['keywords'])}")
-        print(f"{yellow_start}URL: {result['url']}\n")
+        print(f"{yellow_start}URL: {result['url']}{reset_color}\n")
 
     # Visualize sentiment, abstract length, and keyword comparison
     visualize_comparison(paper_results)
@@ -306,8 +310,6 @@ def ai_chatbot(query):
 #         answer = ai_chatbot(user_query)
 #         print(f"Chatbot: {answer}")
 
-
-
 # Main execution for mode selection
 if __name__ == "__main__":
     # Select mode
@@ -335,4 +337,5 @@ if __name__ == "__main__":
             if user_query.lower() == 'exit':
                 break
             answer = ai_chatbot(user_query)
-            print(f"Chatbot: {answer}")
+            print(f"{BLUE}User: {user_query}{RESET}")
+            print(f"{GREEN}Chatbot: {answer}{RESET}")
