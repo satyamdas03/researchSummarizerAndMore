@@ -21,6 +21,15 @@ stop_words = set(stopwords.words('english'))
 # Initialize OpenAI API key from environment variable
 openai.api_key = os.getenv('OPENAI_API_KEY')  # Ensure your .env has this variable
 
+# adding mode 
+# Function to initiate user mode selection
+def select_mode():
+    while True:
+        mode = input("Do you want to use the AI chatbot for research assistance or the manual summarizer? (Type 'AI' or 'Manual'): ").strip().lower()
+        if mode in ['ai', 'manual']:
+            return mode
+        print("Invalid choice. Please type 'AI' or 'Manual'.")
+
 # Step 1: Fetch paper details from arXiv
 def search_paper(paper_title):
     query = f"ti:{paper_title}"
@@ -267,32 +276,63 @@ def ai_chatbot(query):
     return response['choices'][0]['message']['content']
 
 # Main execution for paper comparison
+# if __name__ == "__main__":
+#     # Prompt user for multiple paper titles
+#     paper_titles = input("Enter paper titles (comma-separated) to summarize and compare: ").split(',')
+
+#     # Trim any leading or trailing whitespace from the paper titles
+#     paper_titles = [title.strip() for title in paper_titles]
+
+#     # Generate comparison and visualization for the given paper titles
+#     compare_papers(paper_titles)
+
+#     # Prompt user for the topic and the range of years
+#     topic = input("Enter a topic to track research trends: ")
+#     start_year = int(input("Enter the start year: "))
+#     end_year = int(input("Enter the end year: "))
+    
+#     # Track paper trends and visualize
+#     yearly_summaries, yearly_keywords = track_paper_trends(topic, start_year, end_year)
+    
+#     # Visualize the trends
+#     visualize_paper_trends(yearly_summaries)
+#     visualize_trend_keywords(yearly_keywords)
+
+#     # Chatbot interaction
+#     while True:
+#         user_query = input("Ask the AI chatbot for research assistance (type 'exit' to quit): ")
+#         if user_query.lower() == 'exit':
+#             break
+#         answer = ai_chatbot(user_query)
+#         print(f"Chatbot: {answer}")
+
+
+
+# Main execution for mode selection
 if __name__ == "__main__":
-    # Prompt user for multiple paper titles
-    paper_titles = input("Enter paper titles (comma-separated) to summarize and compare: ").split(',')
+    # Select mode
+    mode = select_mode()
 
-    # Trim any leading or trailing whitespace from the paper titles
-    paper_titles = [title.strip() for title in paper_titles]
+    if mode == 'manual':
+        # Manual mode
+        paper_titles = input("Enter paper titles (comma-separated) to summarize and compare: ").split(',')
+        paper_titles = [title.strip() for title in paper_titles]
+        compare_papers(paper_titles)
 
-    # Generate comparison and visualization for the given paper titles
-    compare_papers(paper_titles)
+        topic = input("Enter a topic to track research trends: ")
+        start_year = int(input("Enter the start year: "))
+        end_year = int(input("Enter the end year: "))
+        
+        yearly_summaries, yearly_keywords = track_paper_trends(topic, start_year, end_year)
+        
+        visualize_paper_trends(yearly_summaries)
+        visualize_trend_keywords(yearly_keywords)
 
-    # Prompt user for the topic and the range of years
-    topic = input("Enter a topic to track research trends: ")
-    start_year = int(input("Enter the start year: "))
-    end_year = int(input("Enter the end year: "))
-    
-    # Track paper trends and visualize
-    yearly_summaries, yearly_keywords = track_paper_trends(topic, start_year, end_year)
-    
-    # Visualize the trends
-    visualize_paper_trends(yearly_summaries)
-    visualize_trend_keywords(yearly_keywords)
-
-    # Chatbot interaction
-    while True:
-        user_query = input("Ask the AI chatbot for research assistance (type 'exit' to quit): ")
-        if user_query.lower() == 'exit':
-            break
-        answer = ai_chatbot(user_query)
-        print(f"Chatbot: {answer}")
+    else:
+        # AI chatbot mode
+        while True:
+            user_query = input("Ask the AI chatbot for research assistance (type 'exit' to quit): ")
+            if user_query.lower() == 'exit':
+                break
+            answer = ai_chatbot(user_query)
+            print(f"Chatbot: {answer}")
