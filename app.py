@@ -269,8 +269,155 @@ def identify_best_paper(paper_results):
     best_paper = max(paper_results, key=lambda paper: (paper['confidence'], paper['abstract_length']))
     return best_paper
 
+
+## making the ai better
+def fetch_latest_papers(topic, max_results=5):
+    query = f"all:{topic}"
+    base_url = "http://export.arxiv.org/api/query?"
+    search_query = f"search_query={query}&start=0&max_results={max_results}&sortBy=submittedDate&sortOrder=descending"
+    response = requests.get(base_url + search_query)
+    
+    papers = []
+    
+    if response.status_code == 200:
+        root = ET.fromstring(response.text)
+        for entry in root.findall('{http://www.w3.org/2005/Atom}entry'):
+            papers.append({
+                'title': entry.find('{http://www.w3.org/2005/Atom}title').text,
+                'abstract': entry.find('{http://www.w3.org/2005/Atom}summary').text,
+                'url': entry.find('{http://www.w3.org/2005/Atom}id').text,
+                'date': entry.find('{http://www.w3.org/2005/Atom}published').text
+            })
+    return papers
+
+def track_paper_trends(topic, start_year, end_year):
+    yearly_summaries = {}
+    
+    for year in range(start_year, end_year + 1):
+        print(f"Fetching papers for the year {year}...")
+        papers = fetch_latest_papers(topic)  # Fetch latest papers on the topic
+        # Here, you might filter papers based on the submission date if needed
+        yearly_summaries[year] = papers  # Store the results
+    
+    return yearly_summaries
+
+def handle_trend_query(topic, start_year, end_year):
+    yearly_summaries, yearly_keywords = track_paper_trends(topic, start_year, end_year)
+    response = f"Trends for '{topic}' from {start_year} to {end_year}:\n"
+    for year, summaries in yearly_summaries.items():
+        response += f"{year}: {len(summaries)} papers\n"
+    return response
+
+def handle_search_query(topic):
+    papers = search_papers_by_topic_and_year(topic, 2023)
+    if papers:
+        response = "Recent papers on '{}':\n".format(topic)
+        for paper in papers:
+            response += f"- {paper['title']}: {paper['url']}\n"
+        return response
+    return f"No papers found on '{topic}'."
+
+def handle_summary_query(paper_title):
+    summary_info = summarize_paper(paper_title)
+    if summary_info:
+        return f"Title: {summary_info['title']}\nSummary: {summary_info['summary']}\nKeywords: {', '.join(summary_info['keywords'])}\nURL: {summary_info['url']}"
+    return f"No paper found with the title '{paper_title}'."
+
+def handle_compare_query(paper_titles):
+    # Compare and visualize papers
+    return compare_papers(paper_titles)
+
+def handle_visualization_request(visualization_type):
+    # Logic to create visualizations based on user request
+    if visualization_type == "trends":
+        return visualize_trends()
+    elif visualization_type == "comparison":
+        return visualize_comparison()
+    else:
+        return "Visualization type not recognized."
+    
+
+def visualize_trends():
+    # Implement trend visualization logic
+    pass
+
+def visualize_comparison():
+    # Implement comparison visualization logic
+    pass
+
+def extract_topic(query):
+    # Extract the topic from the query
+    if "on" in query:
+        return query.split("on")[-1].strip()
+    return query
+
+def get_years(query):
+    import re
+    
+    # Look for years in the format YYYY
+    years = re.findall(r'\b\d{4}\b', query)
+    if len(years) >= 2:
+        return int(years[0]), int(years[1])
+    elif len(years) == 1:
+        return int(years[0]), int(years[0])  # If only one year is found, return it twice
+    else:
+        # Default to the last 5 years if no years are specified
+        from datetime import datetime
+        current_year = datetime.now().year
+        return current_year - 5, current_year
+
+def extract_paper_titles(query):
+    # Assuming titles are separated by commas
+    return [title.strip() for title in query.split(",") if title.strip()]
+
+
+def extract_visualization_type(query):
+    # Check for keywords indicating the type of visualization
+    if "trend" in query:
+        return "trends"
+    elif "compare" in query:
+        return "comparison"
+    return None  # Default or unrecognized visualization type
+
+
+
+
 # Step 11: AI Chatbot for Research Assistance
 def ai_chatbot(query):
+    query = query.lower()
+
+    if "latest papers on" in query:
+        topic = query.split("latest papers on")[-1].strip()
+        papers = fetch_latest_papers(topic)
+        if papers:
+            response = f"Latest papers on '{topic}':\n"
+            for paper in papers:
+                response += f"- {paper['title']} (Published on {paper['date']}): {paper['url']}\n"
+            return response
+        return f"No recent papers found on '{topic}'."
+
+    elif "trend" in query:
+        topic = extract_topic(query)
+        start_year, end_year = get_years(query)
+        return handle_trend_query(topic, start_year, end_year)
+    
+    elif "search for papers on" in query:
+        topic = query.split("search for papers on")[-1].strip()
+        return handle_search_query(topic)
+    
+    elif "summarize paper" in query:
+        paper_title = query.split("summarize paper")[-1].strip()
+        return handle_summary_query(paper_title)
+
+    elif "compare papers" in query:
+        paper_titles = extract_paper_titles(query)  # A function to extract multiple titles
+        return handle_compare_query(paper_titles)
+
+    elif "visualize" in query:
+        visualization_type = extract_visualization_type(query)  # Determine type of visualization
+        return handle_visualization_request(visualization_type)
+    
+
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
