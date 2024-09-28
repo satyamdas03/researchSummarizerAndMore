@@ -10,6 +10,7 @@ import openai
 from dotenv import load_dotenv
 import os
 from matplotlib_venn import venn2, venn3
+from collections import defaultdict
 
 # Define color codes for terminal output
 BLUE = "\033[94m"
@@ -85,7 +86,8 @@ def track_paper_trends(topic, start_year, end_year):
     
     for year in range(start_year, end_year + 1):
         print(f"Fetching papers for the year {year}...")
-        papers = search_papers_by_topic_and_year(topic, year)
+        # papers = search_papers_by_topic_and_year(topic, year)
+        papers = fetch_latest_papers(topic)  # Replace with actual function to fetch papers for the year
         summaries = []
         keywords_list = []
         
