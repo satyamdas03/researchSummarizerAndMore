@@ -337,13 +337,20 @@ def handle_visualization_request(visualization_type):
         return "Visualization type not recognized."
     
 
-def visualize_trends():
-    # Implement trend visualization logic
-    pass
+def visualize_trends(yearly_summaries):
+    years = list(yearly_summaries.keys())
+    num_papers = [len(summaries) for summaries in yearly_summaries.values()]
 
-def visualize_comparison():
-    # Implement comparison visualization logic
-    pass
+    plt.figure(figsize=(10, 6))
+    plt.plot(years, num_papers, marker='o', linestyle='-', color='b')
+    plt.fill_between(years, num_papers, color='lightblue', alpha=0.5)
+    plt.xlabel('Year')
+    plt.ylabel('Number of Papers')
+    plt.title('Research Paper Trends Over Time')
+    plt.grid(True)
+    plt.xticks(years)  # Show all years on the x-axis
+    plt.show()
+
 
 def extract_topic(query):
     # Extract the topic from the query
