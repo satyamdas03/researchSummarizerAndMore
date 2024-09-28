@@ -290,16 +290,16 @@ def fetch_latest_papers(topic, max_results=5):
             })
     return papers
 
-def track_paper_trends(topic, start_year, end_year):
-    yearly_summaries = {}
+# def track_paper_trends(topic, start_year, end_year):
+#     yearly_summaries = {}
     
-    for year in range(start_year, end_year + 1):
-        print(f"Fetching papers for the year {year}...")
-        papers = fetch_latest_papers(topic)  # Fetch latest papers on the topic
-        # Here, you might filter papers based on the submission date if needed
-        yearly_summaries[year] = papers  # Store the results
+#     for year in range(start_year, end_year + 1):
+#         print(f"Fetching papers for the year {year}...")
+#         papers = fetch_latest_papers(topic)  # Fetch latest papers on the topic
+#         # Here, you might filter papers based on the submission date if needed
+#         yearly_summaries[year] = papers  # Store the results
     
-    return yearly_summaries
+#     return yearly_summaries
 
 def handle_trend_query(topic, start_year, end_year):
     yearly_summaries, yearly_keywords = track_paper_trends(topic, start_year, end_year)
