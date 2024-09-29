@@ -178,14 +178,16 @@ def compare_papers(paper_titles):
     reset_color = "\033[0m"
     magenta_color = "\033[35m"
     yellow_start = "\033[93m"
+    blue_start = "\033[94m"
+    cyan_start = "\033[36m"
 
     for result in paper_results:
-        print(f"Title: {result['title']}")
+        print(f"{cyan_start}Title: {result['title']}")
         print(f"{green_start}Summary: {result['summary']}{reset_color}")
 
         print(f"{magenta_color}Sentiment: {result['sentiment']} (Confidence: {result['confidence']:.2f}){reset_color}")
         print(f"Abstract Length: {result['abstract_length']} words")
-        print(f"Keywords: {', '.join(result['keywords'])}")
+        print(f"{blue_start}Keywords: {', '.join(result['keywords'])}")
         print(f"{yellow_start}URL: {result['url']}{reset_color}\n")
 
     # Visualize sentiment, abstract length, and keyword comparison
