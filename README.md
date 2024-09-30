@@ -81,5 +81,5 @@ The provided code consists of several components:
 <img src="output/summarizepaper.png">
 <img src="output/comparisonpaper.png">
 <img src="output/venndiagram.png">
-<img src="output/trendtracking.png.png">
-<img src="output/wordcloud1.png.png">
+<img src="output/trendtracking.png">
+<img src="output/wordcloud1.png">
