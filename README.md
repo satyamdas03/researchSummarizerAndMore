@@ -38,3 +38,16 @@ The application integrates with the arXiv API to fetch paper details, utilizes t
 This project stands out due to its integration of multiple advanced technologies (NLP, data visualization, and API interactions) into a single cohesive tool. 
 The ability to perform sentiment analysis alongside summarization offers users deeper insights into the literature. 
 Additionally, the chatbot interface provides an intuitive way for users to access complex information without needing to navigate through multiple interfaces.
+
+## Future Scope
+   - **Enhanced AI Models:** Integration of more advanced models for improved summarization and sentiment analysis.
+   - **User Personalization:** Incorporating user profiles to save preferences and history for a more personalized experience.
+   - **Expanded Data Sources:** Allowing users to pull papers from multiple repositories beyond arXiv.
+   - **Collaborative Features:** Enabling researchers to share summaries and insights within a collaborative environment.
+   - **Mobile Application:** Developing a mobile version for on-the-go access.
+
+## Code Explanation
+
+The provided code consists of several components:
+
+1. **Dependencies:** The project uses libraries like `requests` for API calls, `transformers` for NLP tasks, `matplotlib` and wordcloud for visualizations, and nltk for natural language processing tasks.
