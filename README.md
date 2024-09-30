@@ -50,4 +50,22 @@ Additionally, the chatbot interface provides an intuitive way for users to acces
 
 The provided code consists of several components:
 
-1. **Dependencies:** The project uses libraries like `requests` for API calls, `transformers` for NLP tasks, `matplotlib` and wordcloud for visualizations, and nltk for natural language processing tasks.
+1. **Dependencies:** The project uses libraries like `requests` for API calls, `transformers` for NLP tasks, `matplotlib` and `wordcloud` for visualizations, and `nltk` for natural language processing tasks.
+2. **Environment Setup:** It loads environment variables for sensitive information (like API keys) from a `.env` file.
+3. **User Interaction:**
+   - The user is prompted to select between manual mode or an AI chatbot for research assistance.
+   - Various functions handle user inputs for searching, summarizing, comparing papers, and visualizing data.
+4. **Data Handling:**
+   - Functions are defined for fetching paper details, parsing XML responses, and aggregating data based on user queries.
+   - The project includes functionalities to track trends and visualize keyword clouds and Venn diagrams.
+5. **Visualization:** The project visualizes research trends and comparative analysis using bar charts and word clouds.
+6. **AI Chatbot:** Uses OpenAI’s API to handle more generalized user queries, enhancing the user experience.
+
+## User Benefits
+
+1. **Efficiency:** Reduces the time spent on literature review by providing quick access to summaries and insights.
+2. **Comprehension:** Summarized abstracts and sentiment analysis allow users to gauge the relevance and tone of papers quickly.
+3. **Trend Analysis:** Helps researchers stay updated with emerging trends and popular topics in their field.
+4. **Interactive Learning:** The chatbot provides an engaging way to explore research topics and paper details.
+
+*This tool represents a significant step towards making academic research more accessible and efficient, catering to both novice and experienced researchers.*
