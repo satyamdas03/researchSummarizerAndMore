@@ -69,3 +69,17 @@ The provided code consists of several components:
 4. **Interactive Learning:** The chatbot provides an engaging way to explore research topics and paper details.
 
 *This tool represents a significant step towards making academic research more accessible and efficient, catering to both novice and experienced researchers.*
+
+## DEMO OF THE WORKING MODEL
+### OF THE AI CHATBOT
+<img src="output/aichatbot1.png">
+<img src="output/aichatbot2.png">
+<img src="output/aichatbot3.png">
+<img src="output/aichatbot4.png">
+
+### OF THE MANUAL PART
+<img src="output/summarizepaper.png">
+<img src="output/comparisonpaper.png">
+<img src="output/venndiagram.png">
+<img src="output/trendtracking.png.png">
+<img src="output/wordcloud1.png.png">
